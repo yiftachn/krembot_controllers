@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="Project"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\program_template\;CMake Files\run_away_by_bumpers\;CMake Files\simple_demo\;CMake Files\porting_example\;CMake Files\sand_timer_test\;CMake Files\ex1\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="program_template">
+				<Option output="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/program_template/libprogram_template.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/program_template"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DCONTROLLER_NAME=program_template_controller"/>
+					<Add option="-DKREMBOT_SIM"/>
+					<Add directory="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/controllers"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/program_template/Makefile&quot;  VERBOSE=1 program_template"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/program_template/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/program_template/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/program_template/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="program_template/fast">
+				<Option output="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/program_template/libprogram_template.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/program_template"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DCONTROLLER_NAME=program_template_controller"/>
+					<Add option="-DKREMBOT_SIM"/>
+					<Add directory="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/controllers"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/program_template/Makefile&quot;  VERBOSE=1 program_template/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/program_template/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/program_template/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/program_template/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="run_away_by_bumpers">
+				<Option output="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/run_away_by_bumpers/librun_away_by_bumpers.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/run_away_by_bumpers"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DCONTROLLER_NAME=run_away_by_bumpers_controller"/>
+					<Add directory="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/controllers"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/run_away_by_bumpers/Makefile&quot;  VERBOSE=1 run_away_by_bumpers"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/run_away_by_bumpers/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/run_away_by_bumpers/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/run_away_by_bumpers/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="run_away_by_bumpers/fast">
+				<Option output="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/run_away_by_bumpers/librun_away_by_bumpers.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/run_away_by_bumpers"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DCONTROLLER_NAME=run_away_by_bumpers_controller"/>
+					<Add directory="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/controllers"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/run_away_by_bumpers/Makefile&quot;  VERBOSE=1 run_away_by_bumpers/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/run_away_by_bumpers/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/run_away_by_bumpers/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/run_away_by_bumpers/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="simple_demo">
+				<Option output="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/simple_demo/libsimple_demo.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/simple_demo"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DCONTROLLER_NAME=simple_demo_controller"/>
+					<Add directory="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/controllers"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/simple_demo/Makefile&quot;  VERBOSE=1 simple_demo"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/simple_demo/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/simple_demo/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/simple_demo/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="simple_demo/fast">
+				<Option output="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/simple_demo/libsimple_demo.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/simple_demo"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DCONTROLLER_NAME=simple_demo_controller"/>
+					<Add directory="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/controllers"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/simple_demo/Makefile&quot;  VERBOSE=1 simple_demo/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/simple_demo/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/simple_demo/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/simple_demo/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="porting_example">
+				<Option output="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/porting_example/libporting_example.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/porting_example"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DCONTROLLER_NAME=porting_example_controller"/>
+					<Add option="-DKREMBOT_SIM"/>
+					<Add directory="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/controllers"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/porting_example/Makefile&quot;  VERBOSE=1 porting_example"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/porting_example/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/porting_example/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/porting_example/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="porting_example/fast">
+				<Option output="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/porting_example/libporting_example.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/porting_example"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DCONTROLLER_NAME=porting_example_controller"/>
+					<Add option="-DKREMBOT_SIM"/>
+					<Add directory="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/controllers"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/porting_example/Makefile&quot;  VERBOSE=1 porting_example/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/porting_example/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/porting_example/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/porting_example/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="sand_timer_test">
+				<Option output="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/sand_timer_test/libsand_timer_test.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/sand_timer_test"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DCONTROLLER_NAME=sand_timer_test_controller"/>
+					<Add option="-DKREMBOT_SIM"/>
+					<Add directory="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/controllers"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/sand_timer_test/Makefile&quot;  VERBOSE=1 sand_timer_test"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/sand_timer_test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/sand_timer_test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/sand_timer_test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="sand_timer_test/fast">
+				<Option output="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/sand_timer_test/libsand_timer_test.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/sand_timer_test"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DCONTROLLER_NAME=sand_timer_test_controller"/>
+					<Add option="-DKREMBOT_SIM"/>
+					<Add directory="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/controllers"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/sand_timer_test/Makefile&quot;  VERBOSE=1 sand_timer_test/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/sand_timer_test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/sand_timer_test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/sand_timer_test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="ex1">
+				<Option output="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/ex1/libex1.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/ex1"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DCONTROLLER_NAME=ex1_controller"/>
+					<Add option="-DKREMBOT_SIM"/>
+					<Add directory="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/controllers"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/ex1/Makefile&quot;  VERBOSE=1 ex1"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/ex1/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/ex1/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/ex1/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="ex1/fast">
+				<Option output="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/ex1/libex1.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/ex1"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DCONTROLLER_NAME=ex1_controller"/>
+					<Add option="-DKREMBOT_SIM"/>
+					<Add directory="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/controllers"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/ex1/Makefile&quot;  VERBOSE=1 ex1/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/ex1/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/ex1/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/cmake-build-debug/ex1/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/ex1/krembot.ino.cpp">
+			<Option target="ex1"/>
+		</Unit>
+		<Unit filename="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/porting_example/krembot.ino.cpp">
+			<Option target="porting_example"/>
+		</Unit>
+		<Unit filename="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/porting_example/my_code/MyCode.cpp">
+			<Option target="porting_example"/>
+		</Unit>
+		<Unit filename="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/porting_example/my_code/MyCode.h">
+			<Option target="porting_example"/>
+		</Unit>
+		<Unit filename="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/program_template/krembot.ino.cpp">
+			<Option target="program_template"/>
+		</Unit>
+		<Unit filename="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/run_away_by_bumpers/krembot.ino.cpp">
+			<Option target="run_away_by_bumpers"/>
+		</Unit>
+		<Unit filename="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/sand_timer_test/krembot.ino.cpp">
+			<Option target="sand_timer_test"/>
+		</Unit>
+		<Unit filename="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/simple_demo/krembot.ino.cpp">
+			<Option target="simple_demo"/>
+		</Unit>
+		<Unit filename="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/program_template/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\program_template\"/>
+		</Unit>
+		<Unit filename="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/run_away_by_bumpers/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\run_away_by_bumpers\"/>
+		</Unit>
+		<Unit filename="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/simple_demo/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\simple_demo\"/>
+		</Unit>
+		<Unit filename="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/porting_example/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\porting_example\"/>
+		</Unit>
+		<Unit filename="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/sand_timer_test/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\sand_timer_test\"/>
+		</Unit>
+		<Unit filename="/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/ex1/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\ex1\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

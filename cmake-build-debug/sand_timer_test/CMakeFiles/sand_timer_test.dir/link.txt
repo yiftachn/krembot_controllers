@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC -g -shared  -o libsand_timer_test.so CMakeFiles/sand_timer_test.dir/krembot.ino.o  -lKrembot -largos3core_simulator -largos3plugin_simulator_footbot -largos3plugin_simulator_genericrobot 

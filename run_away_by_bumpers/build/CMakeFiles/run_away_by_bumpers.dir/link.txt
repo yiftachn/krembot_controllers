@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC   -shared  -o librun_away_by_bumpers.so CMakeFiles/run_away_by_bumpers.dir/krembot.ino.o  -lKrembot -largos3core_simulator -largos3plugin_simulator_footbot -largos3plugin_simulator_genericrobot 

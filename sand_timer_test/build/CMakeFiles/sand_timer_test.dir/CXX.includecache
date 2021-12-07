@@ -1,0 +1,16 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/sand_timer_test/krembot.ino.cpp
+Krembot/controller/krembot_controller.h
+-
+Krembot/krembot.h
+/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/sand_timer_test/Krembot/krembot.h
+chrono
+-
+

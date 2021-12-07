@@ -1,0 +1,3 @@
+/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/run_away_by_bumpers/build/CMakeFiles/rebuild_cache.dir
+/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/run_away_by_bumpers/build/CMakeFiles/edit_cache.dir
+/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/run_away_by_bumpers/build/CMakeFiles/run_away_by_bumpers.dir

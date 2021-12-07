@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC -g -shared  -o libporting_example.so CMakeFiles/porting_example.dir/krembot.ino.o CMakeFiles/porting_example.dir/my_code/MyCode.o  -lKrembot -largos3core_simulator -largos3plugin_simulator_footbot -largos3plugin_simulator_genericrobot 

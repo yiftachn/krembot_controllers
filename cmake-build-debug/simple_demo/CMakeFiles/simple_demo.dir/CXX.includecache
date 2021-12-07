@@ -1,0 +1,12 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/yiftach/CLionProjects/krembot_sim/krembot_ws/controllers/simple_demo/krembot.ino.cpp
+Krembot/controller/krembot_controller.h
+-
+
