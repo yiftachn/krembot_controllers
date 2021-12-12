@@ -14,7 +14,7 @@ struct PosMsg{
 };
 
 
-class PRM_controller : public KrembotController {
+class walkingOnGrid_controller : public KrembotController {
 private:
     Real robotSize = 0.20;
     bool isFirst = true;
@@ -23,7 +23,7 @@ public:
     PosMsg posMsg;
 
     ParticleObserver Particle;
-    ~PRM_controller() = default;
+    ~walkingOnGrid_controller() = default;
     void setup();
     void loop();
 
@@ -41,16 +41,7 @@ public:
         }
         loop();
     }
-    static void pos_to_cord(CVector2 pos, int *j, int *i);
-    static void pos_to_cell(CVector2 position, int *i, int *j, int size);
-    static CVector2 cell_to_cord(int cell_i,int cell_j,int reduction_factor);
 };
 
 
-
-
-
-REGISTER_CONTROLLER(PRM_controller, "PRM_controller")
-
-
-
+REGISTER_CONTROLLER(walkingOnGrid_controller, "walkingOnGrid_controller")
