@@ -1,18 +1,38 @@
 #include "krembot.ino.h"
 #include <string>
 #include <random>
-#include "graph.h"
-#include "Point.h"
-#include "KDTree.h"
+#include <time.h>
+#include <math.h>
+#include <iostream>
+#include "kdtree.hpp"
+#include "Graph.h"
+#include "SimpleEdge.h"
+#include "Graph.h"
+
+#define NUMBER_OF_VERTICES 1000
+
 using namespace std;
+using namespace Kdtree;
 
 void saveGridToFile(string name, int **grid, int _height, int _width);
-
+void clean_logger(string name);
+void log_to_file(string name,string msg);
+void print_nodes(const Kdtree::KdNodeVector &nodes);
+void log_adj_mat_to_file(double** mat);
 int **lowerGridResolution(int **grid, int reduction_factor, int grid_height, int grid_width);
-vector<Point<2>> *sample_n_free_points(int n_points, int max_height, int max_width, int** grid,
-                                       void (*sampling_func)(int &, int &, int, int));
+
+vector<double*> sample_n_free_points(int n_points, int max_height, int max_width, int **grid,
+                          void (*sampling_func)(int &, int &, int, int));
+KdNodeVector insert_points_to_nodes(vector<double*> points);
+double ** calculate_adj_matrix(KdTree& kd_tree,int**&grid,double (*distance_metric)(vector<double> ,vector<double> ,int**));
+double l1_distance(vector<double> source, vector<double> dst, int**grid);
+double l2_distance(vector<double> source, vector<double> dst, int**grid);
+double l0_distance(vector<double> source, vector<double> dst, int**grid);
+
 void uniform_sampling(int &row, int &col, int max_heigth, int max_width);
+bool obstacle_in_the_middle(double source, double dst, int** grid);
 bool is_cell_empty(int row, int col, int **grid);
+string node_to_string(KdNode node);
 int col, row;
 
 int **occupancyGrid;
@@ -28,9 +48,10 @@ enum State {
 } state = turn;
 
 void PRM_controller::setup() {
+
     krembot.setup();
     krembot.Led.write(0, 255, 0);
-
+    clean_logger("logger.txt");
     occupancyGrid = mapMsg.occupancyGrid;
     resolution = mapMsg.resolution;
     origin = mapMsg.origin;
@@ -39,43 +60,20 @@ void PRM_controller::setup() {
     saveGridToFile("grid", occupancyGrid, height, width);
     int reduction_factor = 5;
     int **new_grid = lowerGridResolution(occupancyGrid, reduction_factor, height, width);
-    vector<Point<2>> waypoints = *sample_n_free_points(1000,30,40,new_grid,*uniform_sampling);
-    KDTree<2,int> kd = KDTree<2,int>();
-//    for (auto it = waypoints.begin();it != waypoints.end();++it){
-//        kd.insert(*it);
-//        cout << '(' << to_string(it[0][0]) << ',' << to_string(it[0][1]) <<  ')'  <<'\n';
-//    }
-    int a;
-    Point<2> p= Point<2>(waypoints[1][0],waypoints[1][1]);
-    a = kd.kNNValue(p,5000);
-    cout << "knn value os " << a;
-    auto b = kd.kNNNeighbours(Point<2>(waypoints[3][2],waypoints[0][1]),5);
-    cout << "bpq size is " << b->size()<<'\n';
-    cout << "waypoint1 is " << to_string(waypoints[0][0]) << to_string(waypoints[0][1]) << '\n';
-    while (!(b->empty())){
-        cout << to_string(b->dequeueMin());
-    }
-    cout<<'\n';
+    vector<double*> vec = sample_n_free_points( NUMBER_OF_VERTICES, 30, 40, new_grid, *uniform_sampling);
+    KdNodeVector nodes = insert_points_to_nodes(vec);
+    Kdtree::KdTree kd_tree(&nodes);
+//    print_nodes(kd_tree.allnodes);
+    double ** adj_matrix = calculate_adj_matrix(kd_tree,new_grid,l2_distance);
+    log_to_file("logger.txt","just after assingment");
+    log_to_file("logger.txt","src: " + node_to_string(kd_tree.allnodes[500])+ " dst: " + node_to_string(kd_tree.allnodes[78]) + " adj_mat_dist1 "+
+            to_string(adj_matrix[kd_tree.allnodes[500]._id][kd_tree.allnodes[78]._id]) + " adj_mat_dist2 "+
+                                                                                       to_string(adj_matrix[kd_tree.allnodes[78]._id][kd_tree.allnodes[500]._id]));
+    log_adj_mat_to_file(adj_matrix);
 
-//    Graph *graph= new Graph();
-//    for (pointVec::iterator it = waypoints.begin() ; it != waypoints.end(); ++it){
-//        string vertex_name= Graph::vertex_name_from_ints(it[0][0], it[0][1]);
-//        graph->addvertex(vertex_name);
-//    }
-//    auto res2 = waypoints_kd_tree.neighborhood_points(vector<double>{1,2},5.5);
-//    for (point_t a : res2) {
-//        for (double b : a) {
-//            std::cout << b << " ";
-//        }
-//        std::cout << '\n';
-//    }
 
-//    vector<int>* vector_array = sample_n_free_points(1000,30,40,*uniform_sampling);
-//    for (int i=0; i< 1000;i++){
-//        std::cout << '('<< vector_array[i][0] << ',' << vector_array[i][1]<<")\n";
-//
-//    }
     saveGridToFile("new_grid", new_grid, height / reduction_factor, width / reduction_factor);
+    log_to_file("logger.txt","just after saving grid to file");
 
 }
 
@@ -88,7 +86,7 @@ void PRM_controller::loop() {
         krembot.Led.write(255, 0, 0);
     } else {
 //        Serial.Println(to_string(height));
-        LOG << PRM_controller::posMsg.pos;
+//        LOG << PRM_controller::posMsg.pos;
         Serial.Println("");
         krembot.Base.drive(100, 0);
     }
@@ -125,7 +123,9 @@ int **lowerGridResolution(int **grid, int reduction_factor, int grid_height, int
 //    return lower_res_grid;
 
 }
-
+string node_to_string(KdNode node){
+    return "id: " + to_string(node._id) + "point: (" + to_string(node.point[0]) +','+ to_string(node.point[1])+")\n";
+}
 void saveGridToFile(string name, int **grid, int _height, int _width) {
     ofstream m_cOutput;
     m_cOutput.open(name, ios_base::trunc | ios_base::out);
@@ -134,6 +134,31 @@ void saveGridToFile(string name, int **grid, int _height, int _width) {
             m_cOutput << grid[row][col];
         }
         m_cOutput << endl;
+    }
+    m_cOutput.close();
+}
+
+void clean_logger(string name){
+    ofstream m_cOutput;
+    m_cOutput.open(name, ios_base::trunc | ios_base::out);
+    m_cOutput<<endl;
+    m_cOutput.close();
+}
+void log_to_file(string name,string msg){
+    ofstream m_cOutput;
+    m_cOutput.open(name, ios_base::app | ios_base::out);
+    m_cOutput << msg << endl;
+    m_cOutput.close();
+}
+
+void log_adj_mat_to_file(double** mat){
+    ofstream m_cOutput;
+    m_cOutput.open("adj_mat.txt", ios_base::trunc | ios_base::out);
+    for (int i=0;i<NUMBER_OF_VERTICES;i++){
+        for (int j=0;j<NUMBER_OF_VERTICES;j++){
+            m_cOutput << mat[i][j] <<' ';
+        }
+        m_cOutput <<'\n';
     }
     m_cOutput.close();
 }
@@ -157,28 +182,94 @@ void uniform_sampling(int &row, int &col, int max_heigth, int max_width) {
 
 }
 
-vector<Point<2>> *sample_n_free_points(int n_points, int max_height, int max_width, int** grid,
-                                                       void (*sampling_func)(int &, int &, int, int)) {
-    auto points = new vector<Point<2>>;
+vector<double*> sample_n_free_points(int n_points, int max_height, int max_width, int **grid,
+                          void (*sampling_func)(int &, int &, int, int)) {
+    vector<double*> vec;
     for (int i = 0; i < n_points; i++) {
         int col;
         int row;
         sampling_func(row, col, max_height, max_width);
-        if (is_cell_empty(row,col,grid)) {
+        if (is_cell_empty(row, col, grid)) {
             while (!is_cell_empty(row, col, grid)) {
                 sampling_func(row, col, max_height, max_width);
             }
         }
-        auto new_point = new Point<2>(row,col);
-        points->push_back(new_point[0]);
+
+        auto point = new double[2];
+        point[0] = row;
+        point[1] = col;
+        vec.push_back(point);
     }
-    return points;
+    return vec;
+}
+
+KdNodeVector insert_points_to_nodes(vector<double*> points){
+    KdNodeVector vec;
+    for (auto it = points.begin();it!= points.end();it++){
+        vector<double> point(2);
+        point[0] = it[0][0];
+        point[1] = it[0][1];
+        vec.push_back(KdNode(point));
+    }
+    return vec;
+}
+
+double** calculate_adj_matrix(KdTree& kd_tree,int**&grid,double (*distance_metric)(vector<double> ,vector<double> ,int**)){
+    KdNodeVector points_list = kd_tree.allnodes;
+    double** adj_matrix = new double*[points_list.size()];
+    for (int i=0;i<points_list.size();i++){
+        adj_matrix[i] = new double[points_list.size()];
+        KdNodeVector results;
+        kd_tree.k_nearest_neighbors(points_list.at(i).point,1500,&results,NULL);
+//        log_to_file("logger.txt","AFter knn");
+        for (auto neighbour_it = results.begin();neighbour_it!=results.end();neighbour_it++){
+            if (double distance = distance_metric(points_list.at(i).point,neighbour_it[0].point,grid)){
+//                log_to_file("logger.txt","AFter double assigment");
+//                log_to_file("logger.txt", "distance is"+to_string(distance));
+//                log_to_file("logger.txt", "i is"+to_string(i));
+//                log_to_file("logger.txt", "_id is"+to_string(neighbour_it->_id));
+
+                adj_matrix[i][neighbour_it->_id] = distance;
+//                adj_matrix[neighbour_it->_id][i] = distance;
+//                log_to_file("logger.txt","AFter distance assigment");
+
+            }
+        }
+    }
+//    log_to_file("logger.txt","Just before return");
+    return adj_matrix;
+}
+
+double l2_distance(vector<double> source, vector<double> dst, int**grid){
+    if (obstacle_in_the_middle(source, dst, grid)){
+        return 0;
+    }
+    return sqrt(pow((source[0]-dst[0]),2) + pow(source[1]-dst[1],2));
+}
+double l0_distance(vector<double> source, vector<double> dst, int**grid){
+    return 2.5;
 }
 
 bool is_cell_empty(int row, int col, int **grid) {
     return grid[row][col] == 0;
 }
 
+
+void print_nodes(const Kdtree::KdNodeVector &nodes) {
+    size_t i, j;
+    cout << "\nstarted printing nodes\n with size " << nodes.size() << '\n';
+    for (i = 0; i < nodes.size(); ++i) {
+        if (i > 0)
+        cout << "(";
+        for (j = 0; j < nodes[i].point.size(); j++) {
+            if (j > 0)
+                cout << ",";
+            cout << nodes[i].point[j];
+        }
+        cout << ")";
+    }
+    cout << '\n';
+}
 
 //void PRM_controller::create_prm() {
 //    sample_points()
