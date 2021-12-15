@@ -44,6 +44,7 @@ public:
     static void pos_to_cord(CVector2 pos, int *j, int *i);
     static void pos_to_cell(CVector2 position, int *i, int *j, int size);
     static CVector2 cell_to_cord(int cell_i,int cell_j,int reduction_factor);
+    static std::vector<int> coord_to_cell(std::vector<double> coord,double resolution);
 };
 
 

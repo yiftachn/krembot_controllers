@@ -11,9 +11,6 @@ add_definitions(
 
 set(SRC_FILES
         kdtree.cpp
-        Edge.cpp
-        Node.cpp
-        Graph.cpp
         krembot.ino.cpp
         #todo: list here additional cpp files
         )
