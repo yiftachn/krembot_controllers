@@ -35,7 +35,7 @@ KdNodeVector insert_points_to_nodes(vector<double *> points);
 double **
 calculate_adj_matrix(KdTree &kd_tree, int **&grid, double (*distance_metric)(vector<double>, vector<double>, int **,bool));
 
-double l1_distance(vector<double> source, vector<double> dst, int **grid);
+double l1_distance(vector<double> source, vector<double> dst, int **grid,bool driving);
 
 double l2_distance(vector<double> source, vector<double> dst, int **grid,bool driving);
 
@@ -125,7 +125,7 @@ void PRM_controller::setup() {
     log_to_file("logger.txt", "created kdtree");
 
 //    print_nodes(kd_tree.allnodes);
-    double **adj_matrix = calculate_adj_matrix(kd_tree, new_grid, l2_distance);
+    double **adj_matrix = calculate_adj_matrix(kd_tree, new_grid, l1_distance);
 
     log_to_file("logger.txt", "just after adj_mat calc");
 //    log_to_file("logger.txt",
@@ -275,7 +275,7 @@ bool PRM_controller::close_enough(CVector2 pos, CVector2 dst) {
     destination.push_back(dst_j);
     src.push_back(pos_i);
     src.push_back(pos_j);
-    double distance = l2_distance(src, destination, this->new_grid,true);
+    double distance = l1_distance(src, destination, this->new_grid,true);
     log_to_file("logger.txt","Distnace is " + to_string(distance));
     if ((0 < distance) && (distance <= 2)) {
         return true;
@@ -516,6 +516,22 @@ double l2_distance(vector<double> source, vector<double> dst, int **grid,bool dr
 //    log_to_file("logger.txt","after obstacle in the middle");
 
     return sqrt(pow((source[0] - dst[0]), 2) + pow(source[1] - dst[1], 2));
+}
+double l1_distance(vector<double> source, vector<double> dst, int **grid,bool driving = false) {
+    if (source[0] == dst[0]) {
+        if (source[1] == dst[1]) {
+            return 0.0001;
+        }
+    }
+//    log_to_file("logger.txt","before obstacle in the middle");
+
+    if (obstacle_in_the_middle(source, dst, grid) && !driving) {
+//        log_to_file("logger.txt","found obstacle between " + point_to_string(source) +" and " + point_to_string(dst));
+        return 0;
+    }
+//    log_to_file("logger.txt","after obstacle in the middle");
+
+    return abs(source[0] - dst[0])+ abs(source[1] - dst[1]);
 }
 
 //#todo: you need to use this with coords or cells but not both. right now it's cells'
