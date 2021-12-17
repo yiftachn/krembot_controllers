@@ -63,7 +63,9 @@ public:
     static CDegrees get_position_to_destination(CVector2 pos, CVector2 dst);
     bool close_enough(CVector2 pos,CVector2 dst);
     CVector2 get_next_stop_from_path();
-};
+    int ** create_new_grid(int **grid, int grid_height, int grid_width);
+
+    };
 
 
 
