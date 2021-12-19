@@ -10,7 +10,9 @@
 
 #define NUMBER_OF_VERTICES 12000
 #define REDUCTION_FACTOR 1
-
+// Comment DEBUG out in order to prevent logger from being writ.
+#define DEBUG
+#define K 30
 using namespace std;
 using namespace Kdtree;
 SandTimer timer;
@@ -38,8 +40,6 @@ calculate_adj_matrix(KdTree &kd_tree, int **&grid, double (*distance_metric)(vec
 double l1_distance(vector<double> source, vector<double> dst, int **grid,bool driving);
 
 double l2_distance(vector<double> source, vector<double> dst, int **grid,bool driving);
-
-double l0_distance(vector<double> source, vector<double> dst, int **grid);
 
 void uniform_sampling(int &row, int &col, int max_heigth, int max_width);
 
@@ -85,6 +85,7 @@ void PRM_controller::setup() {
 
     krembot.setup();
     krembot.Led.write(0, 255, 0);
+
     clean_logger("logger.txt");
     occupancyGrid = mapMsg.occupancyGrid;
     resolution = mapMsg.resolution;
@@ -102,149 +103,61 @@ void PRM_controller::setup() {
     std::vector<double> starting_cell_double(starting_cell.begin(), starting_cell.end());
     std::vector<double> goal_cell_double(goal_cell.begin(), goal_cell.end());
 
-    saveGridToFile("grid", occupancyGrid, height, width);
-    log_to_file("logger.txt", "height: " + to_string(height) + "width: " + to_string(width) + '\n');
     int ** inflated_obstacles_grid = PRM_controller::create_new_grid(occupancyGrid, height, width);
-    saveGridToFile("inflated", inflated_obstacles_grid, height, width);
 
-//    this->new_grid = inflated_obstacles_grid;
     this->new_grid = lowerGridResolution(inflated_obstacles_grid,REDUCTION_FACTOR,height,width);
-//    this->new_grid = lowerGridResolution(occupancyGrid,REDUCTION_FACTOR,height,width);
-
-    log_to_file("logger.txt", "created new grid:");
+#ifdef DEBUG
+    saveGridToFile("grid", occupancyGrid, height, width);
+    saveGridToFile("inflated", inflated_obstacles_grid, height, width);
     saveGridToFile("new_grid", new_grid, height/REDUCTION_FACTOR, width/REDUCTION_FACTOR);
-    log_to_file("logger.txt", "printed new grid:");
+    log_to_file("logger.txt", "created new grid:");
 
+#endif
     vector<double *> vec = sample_n_free_points(NUMBER_OF_VERTICES, height / (REDUCTION_FACTOR), width / REDUCTION_FACTOR,
                                                 new_grid, *uniform_sampling);
-    log_to_file("logger.txt", "sampled n points");
-
     KdNodeVector nodes = insert_points_to_nodes(vec);
     Kdtree::KdTree kd_tree(&nodes);
     print_nodes_in_grid(kd_tree.allnodes, new_grid);
-    log_to_file("logger.txt", "created kdtree");
-
-//    print_nodes(kd_tree.allnodes);
-    double **adj_matrix = calculate_adj_matrix(kd_tree, new_grid, l1_distance);
-
-    log_to_file("logger.txt", "just after adj_mat calc");
-//    log_to_file("logger.txt",
-//                "src: " + node_to_string(kd_tree.allnodes[500]) + " dst: " + node_to_string(kd_tree.allnodes[78]) +
-//                " adj_mat_dist1 " +
-//                to_string(adj_matrix[kd_tree.allnodes[500]._id][kd_tree.allnodes[78]._id]) + " adj_mat_dist2 " +
-//                to_string(adj_matrix[kd_tree.allnodes[78]._id][kd_tree.allnodes[500]._id]));
-    log_adj_mat_to_file(adj_matrix);
-    log_to_file("logger.txt","starting_cell_double:" + point_to_string(starting_cell_double));
-    log_to_file("logger.txt","goal_cell_double:" + point_to_string(goal_cell_double));
-
+    double **adj_matrix = calculate_adj_matrix(kd_tree, new_grid, l2_distance);
     this->path = find_shortest_path(starting_cell_double, goal_cell_double, adj_matrix, kd_tree);
-    log_to_file("logger.txt", "just after PATH!!");
+
+#ifdef DEBUG
+    log_adj_mat_to_file(adj_matrix);
     print_path_to_file(path, new_grid);
-    log_to_file("logger.txt", "Printed PATH!!");
     print_path_as_list(path);
-    log_to_file("logger.txt", "just after saving grid to file");
-#define LOOP;
+#endif
+
 }
 
 void PRM_controller::loop() {
     krembot.loop();
-//    log_to_file("logger.txt", "Line 133\n");
 
-
-//    log_to_file("logger.txt", "goal position:" + to_string(this->goal.GetX()) + ',' +
-//                              to_string(this->goal.GetY()) + '\n');
     if (this->close_enough(PRM_controller::posMsg.pos, this->goal)) {
         log_to_file("logger.txt", "At goal! pos: " + to_string(PRM_controller::posMsg.pos.GetX()) + ',' +
                                   to_string(PRM_controller::posMsg.pos.GetY()));
-//        LOG << "I'm at the stop!\n";
         krembot.Base.stop();
         krembot.Led.write(255, 150, 130);
         this->reached_goal = true;
     }
 
-//    LOG << "checking if close to next stop.  Now at: " << PRM_controller::posMsg.pos << ". wanna go to " +
-//    to_string(this->next_stop.GetX()) + ',' +to_string(this->next_stop.GetY()) + '\n';
     if ((this->close_enough(PRM_controller::posMsg.pos, this->next_stop)) && !reached_goal) {
-//        LOG << "I'm close to my next stop!\n";
-//        log_to_file("logger.txt", "At next_stop!");
-//        log_to_file("logger.txt", "Line 149\n");
-
         krembot.Base.stop();
-//        log_to_file("logger.txt", "Before getting from path...\n");
-
         this->next_stop = this->get_next_stop_from_path();
-//        log_to_file("logger.txt", "After getting from path...\n");
-
-//        LOG << "got next node from the path";
-//        log_to_file("logger.txt", "Got my next stop! : " + to_string(this->next_stop.GetX()) + ',' +
-//                                  to_string(this->next_stop.GetY()) + '\n');
-
-//        LOG << "got next stop from path: " << to_string(this->next_stop.GetX()) + ',' +
-//                                              to_string(this->next_stop.GetY()) + '\n';
         this->right_angle = PRM_controller::get_position_to_destination(PRM_controller::posMsg.pos, this->next_stop);
-//        log_to_file("logger.txt", "got right angle!");
         this->setup_angle = true;
     }
     if (this->setup_angle) {
-//        LOG << "I'm turning!\n";
-        krembot.Base.drive(0, 30);
-        log_to_file("logger.txt", "Line 164\n");
-
-        LOG << "I'm Turning!\n";
-        LOG << "my angle " << PRM_controller::posMsg.degreeX.UnsignedNormalize() << '\n';
-        LOG << "correct angle " << this->right_angle.UnsignedNormalize() << '\n';
-        LOG << "difference is  " << (NormalizedDifference(PRM_controller::posMsg.degreeX.UnsignedNormalize(),
-                                                          this->right_angle.UnsignedNormalize()).UnsignedNormalize())
-            << '\n';
+        krembot.Base.drive(0, ANGULAR_SPEED);
     }
     if (((NormalizedDifference(PRM_controller::posMsg.degreeX.UnsignedNormalize(),
-                               this->right_angle.UnsignedNormalize()).UnsignedNormalize()) < CDegrees(5)) &&
+                               this->right_angle.UnsignedNormalize()).UnsignedNormalize()) < CDegrees(MAXIMAL_DEGREE_DIFF)) &&
         !reached_goal) {
-
-        LOG << "I'm Driving towards next goal!\n";
-        LOG << "my angle " << PRM_controller::posMsg.degreeX.UnsignedNormalize() << '\n';
-        LOG << "correct angle " << this->right_angle.UnsignedNormalize() << '\n';
-        LOG << "difference is  " << (NormalizedDifference(PRM_controller::posMsg.degreeX.UnsignedNormalize(),
-                                                          this->right_angle.UnsignedNormalize()).UnsignedNormalize())
-            << '\n';
-        log_to_file("logger.txt", "my position:" + to_string(PRM_controller::posMsg.pos.GetX()) + ',' +
-                                  to_string(PRM_controller::posMsg.pos.GetY()) + '\n');
-        log_to_file("logger.txt", "next stop position:" + to_string(this->next_stop.GetX()) + ',' +
-                                  to_string(this->next_stop.GetY()) + '\n');
-        log_to_file("logger.txt", "Close enough" + to_string(this->close_enough(PRM_controller::posMsg.pos, this->next_stop)) + '\n');
-        log_to_file("logger.txt","driving...");
         krembot.Base.drive(100, 0);
         this->setup_angle = false;
-//        log_to_file("logger.txt", "Line 187\n");
-
-//        if (!timer.isRunning()){
-//            timer.setPeriod(300);
-//            timer.start();
-//        }
-//        log_to_file("logger.txt", "Line 199\n");
-
     }
 
 }
 
-//            log_to_file("logger.txt", "Diff between angles\n: " + to_string(
-//                    NormalizedDifference(PRM_controller::posMsg.degreeX.UnsignedNormalize(),
-//                                         right_angle.UnsignedNormalize()).UnsignedNormalize().GetValue()));
-//            log_to_file("logger.txt", "right_angle \n: " + to_string(right_angle.UnsignedNormalize().UnsignedNormalize().GetValue()));
-//            log_to_file("logger.txt", "my_angle1 \n: " + to_string(PRM_controller::posMsg.degreeX.UnsignedNormalize().UnsignedNormalize().GetValue()));
-
-//            log_to_file("logger.txt", "my_angle2 \n: " + to_string(PRM_controller::posMsg.degreeX.UnsignedNormalize().UnsignedNormalize().GetValue()));
-
-
-//        KEEP TURNING UNTIL IN RIGHT ANGLE
-//        krembot.Base.((degree_to_next_stop(pos,next_point)));
-
-
-//    krembot.Base.drive(100, 0);
-
-//        krembot.Base.drive(0,30);
-//        LOG << PRM_controller::get_position_to_destination(this->goal,this->starting_position)<<'\n';
-//        LOG << PRM_controller::posMsg.degreeX.UnsignedNormalize();
 
 
 
@@ -252,12 +165,10 @@ void PRM_controller::loop() {
 
 
 CVector2 PRM_controller::get_next_stop_from_path() {
-    log_to_file("logger.txt", "path_count " + to_string(path_count) + ",path size: " + to_string(path.size()));
     if (path_count == path.size()) {
         return this->goal;
     }
     vector<double> next_grid_coord = this->path.at(this->path_count);
-    log_to_file("logger.txt", "got next stop from path: " + point_to_string(next_grid_coord));
     this->path_count = this->path_count + 1;
     CVector2 next_stop = PRM_controller::cell_to_cord(next_grid_coord[0], next_grid_coord[1], REDUCTION_FACTOR);
     return next_stop;
@@ -266,8 +177,6 @@ CVector2 PRM_controller::get_next_stop_from_path() {
 bool PRM_controller::close_enough(CVector2 pos, CVector2 dst) {
     vector<double> src;
     vector<double> destination;
-//#todo: convert to cells,consider using distance of <= 1
-//    log_to_file("logger.txt","before close_enough_distance_calc\n");
     int pos_i, pos_j, dst_i, dst_j;
     pos_to_cord(pos, &pos_i, &pos_j);
     pos_to_cord(dst, &dst_i, &dst_j);
@@ -275,8 +184,7 @@ bool PRM_controller::close_enough(CVector2 pos, CVector2 dst) {
     destination.push_back(dst_j);
     src.push_back(pos_i);
     src.push_back(pos_j);
-    double distance = l1_distance(src, destination, this->new_grid,true);
-    log_to_file("logger.txt","Distnace is " + to_string(distance));
+    double distance = l2_distance(src, destination, this->new_grid,true);
     if ((0 < distance) && (distance <= 2)) {
         return true;
     } else {
@@ -285,26 +193,13 @@ bool PRM_controller::close_enough(CVector2 pos, CVector2 dst) {
 }
 
 CDegrees PRM_controller::get_position_to_destination(CVector2 pos, CVector2 dst) {
-
-
     double dx = dst.GetX() - pos.GetX();
     double dy = dst.GetY() - pos.GetY();
     double angle = atan2(dy, dx);
     CDegrees right_degree = CDegrees(angle * 180 / ARGOS_PI).UnsignedNormalize();
     return right_degree;
 }
-//
-//    float distance = krembot.RgbaFront.readRGBA().Distance;
-//    if (distance < 15) {
-//        krembot.Base.stop();
-//        krembot.Led.write(255, 0, 0);
-//    } else {
-////        Serial.Println(to_string(height));
-////        LOG << PRM_controller::posMsg.pos;
-//PRM_controller::posMsg.degreeX;
-//        Serial.Println("");
-//        krembot.Base.drive(100, 0);
-//    }
+
 
 
 int **PRM_controller::create_new_grid(int **grid, int grid_height, int grid_width) {
@@ -320,7 +215,6 @@ int **PRM_controller::create_new_grid(int **grid, int grid_height, int grid_widt
             created_grid[i][j] = 0;
         }
     }
-//    log_to_file("logger.txt", "created new grid initialized at 0\n");
     for (int _row = height - 1; _row >= 0; _row--) {
         for (int _col = 0; _col < width; _col++) {
             if (grid[_row][_col] == 1) {
@@ -332,9 +226,7 @@ int **PRM_controller::create_new_grid(int **grid, int grid_height, int grid_widt
                      i >= max(0, height_min); i--) {
                     for (int j = max(width_min, 0);
                          j < min(width, width_max-1); j++) {
-//                        log_to_file("logger.txt", "assign i: "+ to_string(i) +" j: "+ to_string(j));
                         created_grid[i][j] = 1;
-//                        log_to_file("logger.txt", "Assingment successful");
 
                     }
                 }
@@ -362,17 +254,6 @@ int **lowerGridResolution(int **grid, int reduction_factor, int grid_height, int
         }
     }
     return new_grid;
-
-//    lower_res_grid = new int*[grid_height];
-//
-//    for(int row=grid_height-1; row>=0; row--){
-//        lower_res_grid[row/reduction_factor] = new int[grid_width / reduction_factor];
-//        for(int col=0; col < grid_width; col++){
-//            lower_res_grid[row/reduction_factor][col/reduction_factor] = grid[row][col];
-//        }
-//    }
-//    return lower_res_grid;
-
 }
 
 string node_to_string(KdNode node) {
@@ -423,7 +304,7 @@ void log_adj_mat_to_file(double **mat) {
 }
 
 CVector2 PRM_controller::cell_to_cord(int cell_i, int cell_j, int reduction_factor) {
-//    now it points to the origin of the cell, better imporve it to the center of the cell
+// We return the coordinate in the middle of the cell
     double half_cell = reduction_factor * resolution / 2;
     Real x_cord = half_cell + origin.GetX() + reduction_factor * resolution * cell_j;
     Real y_cord = half_cell + origin.GetY() + reduction_factor * resolution * cell_i;
@@ -481,23 +362,15 @@ calculate_adj_matrix(KdTree &kd_tree, int **&grid,
     for (int i = 0; i < points_list.size(); i++) {
         adj_matrix[i] = new double[points_list.size()];
         KdNodeVector results;
-        kd_tree.k_nearest_neighbors(points_list.at(i).point, 30, &results, NULL);
-//        log_to_file("logger.txt","AFter knn");
+        kd_tree.k_nearest_neighbors(points_list.at(i).point, K, &results, NULL);
         for (auto neighbour_it = results.begin(); neighbour_it != results.end(); neighbour_it++) {
             if (double distance = distance_metric(points_list.at(i).point, neighbour_it[0].point, grid, false)) {
-//                log_to_file("logger.txt", "AFter double assigment");
-//                log_to_file("logger.txt", "distance is"+to_string(distance));
-//                log_to_file("logger.txt", "i is"+to_string(i));
-//                log_to_file("logger.txt", "_id is"+to_string(neighbour_it->_id));
-
                 adj_matrix[i][neighbour_it->_id] = distance;
-//                adj_matrix[neighbour_it->_id][i] = distance;
-//                log_to_file("logger.txt", "AFter distance assigment");
+
 
             }
         }
     }
-//    log_to_file("logger.txt","Just before return");
     return adj_matrix;
 }
 
@@ -507,14 +380,9 @@ double l2_distance(vector<double> source, vector<double> dst, int **grid,bool dr
             return 0.0001;
         }
     }
-//    log_to_file("logger.txt","before obstacle in the middle");
-
     if (obstacle_in_the_middle(source, dst, grid) && !driving) {
-//        log_to_file("logger.txt","found obstacle between " + point_to_string(source) +" and " + point_to_string(dst));
         return 0;
     }
-//    log_to_file("logger.txt","after obstacle in the middle");
-
     return sqrt(pow((source[0] - dst[0]), 2) + pow(source[1] - dst[1], 2));
 }
 double l1_distance(vector<double> source, vector<double> dst, int **grid,bool driving = false) {
@@ -523,18 +391,12 @@ double l1_distance(vector<double> source, vector<double> dst, int **grid,bool dr
             return 0.0001;
         }
     }
-//    log_to_file("logger.txt","before obstacle in the middle");
-
     if (obstacle_in_the_middle(source, dst, grid) && !driving) {
-//        log_to_file("logger.txt","found obstacle between " + point_to_string(source) +" and " + point_to_string(dst));
         return 0;
     }
-//    log_to_file("logger.txt","after obstacle in the middle");
-
     return abs(source[0] - dst[0])+ abs(source[1] - dst[1]);
 }
 
-//#todo: you need to use this with coords or cells but not both. right now it's cells'
 bool obstacle_in_the_middle(vector<double> source, vector<double> dst, int **grid) {
 
 
@@ -546,24 +408,13 @@ bool obstacle_in_the_middle(vector<double> source, vector<double> dst, int **gri
         double n = source[1] - slope * source[0];
         int obstacle = 0;
         for (int i = 0; i < number_of_points_to_sample; i++) {
-//        log_to_file("logger.txt", "in ");
-
             double new_point_x = source[0] + (i / number_of_points_to_sample) * x_diff;
             double new_point_y = new_point_x * slope + n;
-//        log_to_file("logger.txt", "before assigment: x = " + point_to_string(source) + " y = " + point_to_string(dst));
-//        vector<double> new_point_vec;
-//        new_point_vec.push_back(new_point_x);
-//        new_point_vec.push_back(new_point_y);
 
-#ifdef LOOP
-//        log_to_file("logger.txt", "before assigment, i = " + to_string((int)new_point_x)+", j = " +to_string((int)new_point_y) );
-#endif
             int x_point_to_check = (int) new_point_x;
             int y_point_to_check = (int) new_point_y;
 
                     obstacle = grid[x_point_to_check][y_point_to_check];
-//                    log_to_file("logger.txt", "after grid reading 1\n");
-
             if (obstacle == 1) {
                 return true;
             }
@@ -573,143 +424,33 @@ bool obstacle_in_the_middle(vector<double> source, vector<double> dst, int **gri
         int obstacle = 0;
         for (int i = 0; i < number_of_points_to_sample; i++) {
             double new_point_y = source[1] + (i / number_of_points_to_sample) * y_diff;
-//            log_to_file("logger.txt", "before assigment2");
             int x_point_to_check = (int) source[0];
             int y_point_to_check = (int) new_point_y;
                     obstacle = grid[x_point_to_check][y_point_to_check];
-//                    log_to_file("logger.txt", "after grid reading 2\n");
 
 
 
 
 
             if (obstacle == 1) {
-//                log_to_file("logger.txt", "Found obstacle\n");
-
                 return true;
             }
         }
     }
-//    log_to_file("logger.txt", "Didnt Found obstacle\n");
-
     return false;
-//
-//    double distance_between_points = sqrt(pow((source[0] - dst[0]), 2) + pow(source[1] - dst[1], 2));
-//    int max_cell_to_check = int((resolution * width) / (resolution * REDUCTION_FACTOR)) - 1;
-////    log_to_file("logger.txt","max cell to check: " + to_string(max_cell_to_check));
-//    int number_of_points_to_sample = 3 * (int) distance_between_points;
-//    double x_diff = dst[0] - source[0];
-//    int legal_x_point_to_check;
-//    int legal_y_point_to_check;
-//    if (source[0] != dst[0]) {
-//        double slope = ((source[1] - dst[1]) / (source[0] - dst[0]));
-//        double n = source[1] - slope * source[0];
-//        for (int i = 0; i < number_of_points_to_sample; i++) {
-////        log_to_file("logger.txt", "in ");
-//
-//            double new_point_x = source[0] + (i / number_of_points_to_sample) * x_diff;
-//            double new_point_y = new_point_x * slope + n;
-////        log_to_file("logger.txt", "before assigment: x = " + point_to_string(source) + " y = " + point_to_string(dst));
-////        vector<double> new_point_vec;
-////        new_point_vec.push_back(new_point_x);
-////        new_point_vec.push_back(new_point_y);
-//
-//#ifdef LOOP
-////        log_to_file("logger.txt", "before assigment, i = " + to_string((int)new_point_x)+", j = " +to_string((int)new_point_y) );
-//#endif
-//            int x_point_to_check = (int) new_point_x;
-//            int y_point_to_check = (int) new_point_y;
-//            int index_permutations[3] = {-1, 0, 1};
-//            int obstacle = 0;
-//            for (int j = 0; i < 3; i++) {
-//                for (int k = 0; j < 3; j++) {
-//                    int index_to_add_x = index_permutations[j];
-//                    int index_to_add_y = index_permutations[k];
-//                    legal_x_point_to_check = min(max((x_point_to_check + index_to_add_x), 0),
-//                                                 max_cell_to_check);
-//                    legal_y_point_to_check = min(max((y_point_to_check + index_to_add_y), 0),
-//                                                 max_cell_to_check);
-////                    log_to_file("logger.txt", ("legal x:" + to_string(legal_x_point_to_check) + " legal y: " +
-////                                              to_string(legal_y_point_to_check) + '\n'+"original x: " + to_string(new_point_x) + " originial y: "+
-////                            to_string(new_point_y)+" j: "+ to_string(i)+" k: "+ to_string(j)+"permutated index to add x: " +
-////                            to_string(index_permutations[j])) + " permutated index to add y:  "+ to_string(index_to_add_y));
-//                    obstacle = max(grid[legal_x_point_to_check][legal_y_point_to_check], obstacle);
-////                    log_to_file("logger.txt", "after grid reading 1\n");
-//
-//                }
-//            }
-//
-//
-////            log_to_file("logger.txt", "after assigment");
-//
-//
-//            if (obstacle == 1) {
-//                return true;
-//            }
-//        }
-//    } else {
-//        double y_diff = dst[1] - source[1];
-//        for (int i = 0; i < number_of_points_to_sample; i++) {
-//            double new_point_y = source[1] + (i / number_of_points_to_sample) * y_diff;
-////            log_to_file("logger.txt", "before assigment2");
-//            int x_point_to_check = (int) source[0];
-//            int y_point_to_check = (int) new_point_y;
-//            int index_permutations[3] = {-1, 0, 1};
-//            int obstacle = 0;
-//            for (int j = 0; i < 3; i++) {
-//                for (int k = 0; j < 3; j++) {
-//                    int index_to_add_x = index_permutations[j];
-//                    int index_to_add_y = index_permutations[k];
-//                    legal_x_point_to_check = min(max((x_point_to_check + index_to_add_x), 0),
-//                                                 max_cell_to_check);
-//                    legal_y_point_to_check = min(max((y_point_to_check + index_to_add_y), 0),
-//                                                 max_cell_to_check);
-////                    log_to_file("logger.txt", "before grid reading 2\n");
-////                    log_to_file("logger.txt", ("legal x:" + to_string(legal_x_point_to_check) + " legal y: " +
-////                                               to_string(legal_y_point_to_check) + '\n'+"original x: " + to_string(source[0]) + " originial y: "+
-////                                               to_string(new_point_y)+" j: "+ to_string(i)+" k: "+ to_string(j)+"permutated index to add x: " +
-////                                               to_string(index_permutations[j])) + " permutated index to add y:  "+ to_string(index_to_add_y));
-//                    obstacle = max(grid[legal_x_point_to_check][legal_y_point_to_check], obstacle);
-////                    log_to_file("logger.txt", "after grid reading 2\n");
-//
-//                }
-//            }
-//
-//
-//            if (obstacle == 1) {
-////                log_to_file("logger.txt", "Found obstacle\n");
-//
-//                return true;
-//            }
-//        }
-//    }
-////    log_to_file("logger.txt", "Didnt Found obstacle\n");
-//
-//    return false;
 }
 
 
 vector<vector<double>>
 find_shortest_path(vector<double> src, vector<double> dst, double **adj_matrix, KdTree &kd_tree) {
-    //todo: You need to make sure obstacle isn't in the way - consider creating a new subclass to KDTree measure distnace with your distance;
-//        log_to_file("logger.txt", "printing kd-tree nodes inside shortest path");
-
+    // Implementing Dijkstra Shortest Path algorithm in _find_shortest_path_from_two_nodes
     KdNodeVector first_node;
-        log_to_file("logger.txt", "before first 1NN Searches");
-
     kd_tree.k_nearest_neighbors(src, 1, &first_node);
-        log_to_file("logger.txt", "after first 1NN Searches");
-
     KdNodeVector last_node;
     kd_tree.k_nearest_neighbors(dst, 1, &last_node);
-        log_to_file("logger.txt", "after second 1NN Searches");
     stack<int> nodes_id_path;
-        log_to_file("logger.txt", "Just after 1NN Searches");
-    log_to_file("logger.txt", "Last point closest node: " + node_to_string(last_node.at(0)));
-    log_to_file("logger.txt", "Init point closest node: " + node_to_string(first_node.at(0)));
 
     nodes_id_path = _find_shortest_path_from_two_nodes(first_node.at(0), last_node.at(0), adj_matrix);
-        log_to_file("logger.txt", "nodes_id_path size " + to_string(nodes_id_path.size()));
     vector<vector<double>> path = convert_path_from_id_to_coords(nodes_id_path, kd_tree);
     return path;
 }
@@ -722,36 +463,11 @@ stack<int> _find_shortest_path_from_two_nodes(KdNode src, KdNode dst, double **a
     std::fill_n(distances, NUMBER_OF_VERTICES, 999999);
     std::fill_n(unvisited, NUMBER_OF_VERTICES, 1);
     distances[src._id] = 0;
-    //todo: are the IDs alligned to the adj matrix? they should be.
     int counter = 0;
-    log_to_file("logger.txt", "src id: " + to_string(src._id) + "unvisited dst: " + to_string(unvisited[src._id]));
-    log_to_file("logger.txt", "dst id: " + to_string(dst._id) + "unvisited dst: " + to_string(unvisited[dst._id]));
     while (unvisited[dst._id] == 1) {
-//            log_to_file("logger.txt", "DJIKSTRAs counter " + to_string(counter++));
         int next_node = find_index_of_unvisited_min_index(distances, unvisited);
-            if(next_node == -1){
-                log_to_file("logger.txt", "next node is :" + to_string(next_node));
-                log_to_file("logger.txt", "Distance of src is  is :" + to_string(distances[src._id]));
-
-
-//                string s = "";
-//                for (int k=0;k<NUMBER_OF_VERTICES;k++){
-//                    if (unvisited[k] == 1){
-//                        s += to_string(distances[k]) +", ";
-//                    }
-//                    s = s + '\n';
-//                }
-////                log_to_file("logger.txt","distances\n" + s);
-//                s = "";
-//                for (int k=0;k<NUMBER_OF_VERTICES;k++){
-//                        s += to_string(adj_matrix[dst._id][k]) +", ";
-//                }
-//                log_to_file("logger.txt","\nADj Matrix: " + s);
-//                log_to_file("logger.txt", "counter" + to_string(counter));
-            }
         unvisited[next_node] = 0;
         vector<int> neighbours_of_node = get_neighbours_of_node(next_node, adj_matrix);
-//            log_to_file("logger.txt", "neighbehood size is :" + to_string(neighbours_of_node.size()));
         for (auto it = neighbours_of_node.begin(); it != neighbours_of_node.end(); it++) {
             double alternative_distance = distances[next_node] + adj_matrix[next_node][it[0]];
             if (alternative_distance < distances[it[0]]) {
@@ -760,20 +476,14 @@ stack<int> _find_shortest_path_from_two_nodes(KdNode src, KdNode dst, double **a
             }
         }
     }
-//        log_to_file("logger.txt", "Just after All unvisited");
-
     stack<int> path;
     int previous_step = dst._id;
     while (previous_step != src._id) {
-//        log_to_file("logger.txt", "Previous step: "+ to_string(previous_step));
-
         path.push(previous_step);
         previous_step = previous_node[previous_step];
     }
     //Push src _id to path
     path.push(previous_node[previous_step]);
-    log_to_file("logger.txt", "Just Finished pushing path to stack");
-
     return path;
 }
 
@@ -781,12 +491,8 @@ int find_index_of_unvisited_min_index(double *array, int *unvisited) {
     double min = 999999;
     int best_index = -1;
     int i = 0;
-//    log_to_file("logger.txt","starting to look for min\n");
     for (; i < NUMBER_OF_VERTICES; i++) {
-
-//        log_to_file("logger.txt","i: "+ to_string(i)+" min" + to_string(min) + "array[i]: "+to_string(array[i]) +'\n');
         if (array[i] < min && unvisited[i] == 1) {
-//            log_to_file("logger.txt","found min it's  :" + to_string(array[i])+"< " + to_string(min));
             min = array[i];
             best_index = i;
         }
@@ -815,7 +521,6 @@ vector<vector<double>> convert_path_from_id_to_coords(stack<int> nodes_id_path, 
         KdNode node_of_id;
         for (auto it = nodes.begin(); it != nodes.end(); it++) {
             if (it[0]._id == id) {
-                log_to_file("logger.txt","NODE ID: " + to_string(id) +"is Point "+ point_to_string(it[0].point));
                 path.push_back(it[0].point);
                 break;
             }
@@ -825,9 +530,6 @@ vector<vector<double>> convert_path_from_id_to_coords(stack<int> nodes_id_path, 
 }
 
 
-double l0_distance(vector<double> source, vector<double> dst, int **grid) {
-    return 2.5;
-}
 
 bool is_cell_empty(int row, int col, int **grid) {
     return grid[row][col] == 0;
@@ -840,37 +542,6 @@ void print_nodes(const Kdtree::KdNodeVector &nodes) {
         log_to_file("logger.txt", node_to_string(nodes[i]));
     }
 }
-
-
-//void PRM_controller::create_prm() {
-//    sample_points()
-//    insert
-//    point
-//    to
-//    KD - tree
-//    Add edges
-//
-//    waypoints_kd_tree = KDTree()
-//    while number_of_free_Sampled_point < N:
-//    point = sample
-//    point;
-//    if point
-//    is
-//    free:
-//    add
-//    to
-//    waypoints_kd - tree;
-//    for
-//    each
-//    waypoint
-//    in
-//    point_neiberhood:
-//    add edge(waypoint, point)
-//    AFTERWARDS
-//    CHECK
-//    IF
-//    CONNECTED COMPONENTS;
-//}
 
 void PRM_controller::pos_to_cord(CVector2 position, int *i, int *j) {
     *i = (position.GetX() - origin.GetX()) / (resolution * REDUCTION_FACTOR);

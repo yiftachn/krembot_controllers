@@ -1,6 +1,8 @@
 #include <Krembot/controller/krembot_controller.h>
 #include <queue>
 
+#define ANGULAR_SPEED 30
+#define MAXIMAL_DEGREE_DIFF 5
 struct MapMsg{
     int ** occupancyGrid;
     Real resolution;
