@@ -133,8 +133,6 @@ void PRM_controller::loop() {
     krembot.loop();
 
     if (this->close_enough(PRM_controller::posMsg.pos, this->goal)) {
-        log_to_file("logger.txt", "At goal! pos: " + to_string(PRM_controller::posMsg.pos.GetX()) + ',' +
-                                  to_string(PRM_controller::posMsg.pos.GetY()));
         krembot.Base.stop();
         krembot.Led.write(255, 150, 130);
         this->reached_goal = true;
