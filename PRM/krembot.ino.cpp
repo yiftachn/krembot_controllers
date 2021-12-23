@@ -8,7 +8,7 @@
 #include <stack>
 #include <stdlib.h>
 
-#define NUMBER_OF_VERTICES 12000
+#define NUMBER_OF_VERTICES 1
 #define REDUCTION_FACTOR 1
 // Comment DEBUG out in order to prevent logger from being writ.
 #define DEBUG
@@ -117,11 +117,11 @@ void PRM_controller::setup() {
                                                 new_grid, *uniform_sampling);
     KdNodeVector nodes = insert_points_to_nodes(vec);
     Kdtree::KdTree kd_tree(&nodes);
-    print_nodes_in_grid(kd_tree.allnodes, new_grid);
     double **adj_matrix = calculate_adj_matrix(kd_tree, new_grid, l2_distance);
     this->path = find_shortest_path(starting_cell_double, goal_cell_double, adj_matrix, kd_tree);
 
 #ifdef DEBUG
+    print_nodes_in_grid(kd_tree.allnodes, new_grid);
     log_adj_mat_to_file(adj_matrix);
     print_path_to_file(path, new_grid);
     print_path_as_list(path);
@@ -153,7 +153,6 @@ void PRM_controller::loop() {
         krembot.Base.drive(100, 0);
         this->setup_angle = false;
     }
-
 }
 
 
@@ -163,6 +162,10 @@ void PRM_controller::loop() {
 
 
 CVector2 PRM_controller::get_next_stop_from_path() {
+    if (path.size() == 0){
+        LOG << "Did not Find Path!!\n" << '\n';
+        return this->starting_position;
+    }
     if (path_count == path.size()) {
         return this->goal;
     }
@@ -365,7 +368,6 @@ calculate_adj_matrix(KdTree &kd_tree, int **&grid,
             if (double distance = distance_metric(points_list.at(i).point, neighbour_it[0].point, grid, false)) {
                 adj_matrix[i][neighbour_it->_id] = distance;
 
-
             }
         }
     }
@@ -375,7 +377,7 @@ calculate_adj_matrix(KdTree &kd_tree, int **&grid,
 double l2_distance(vector<double> source, vector<double> dst, int **grid,bool driving = false) {
     if (source[0] == dst[0]) {
         if (source[1] == dst[1]) {
-            return 0.0001;
+            return 0.00001;
         }
     }
     if (obstacle_in_the_middle(source, dst, grid) && !driving) {
@@ -454,6 +456,7 @@ find_shortest_path(vector<double> src, vector<double> dst, double **adj_matrix, 
 }
 
 stack<int> _find_shortest_path_from_two_nodes(KdNode src, KdNode dst, double **adj_matrix) {
+    // Dijkstra
     int previous_node[NUMBER_OF_VERTICES];
     double distances[NUMBER_OF_VERTICES];
     int unvisited[NUMBER_OF_VERTICES];
@@ -464,6 +467,11 @@ stack<int> _find_shortest_path_from_two_nodes(KdNode src, KdNode dst, double **a
     int counter = 0;
     while (unvisited[dst._id] == 1) {
         int next_node = find_index_of_unvisited_min_index(distances, unvisited);
+        if (next_node == -1){
+            LOG << "No Path Found!\n" << '\n';
+            stack<int> empty_path;
+            return empty_path;
+        }
         unvisited[next_node] = 0;
         vector<int> neighbours_of_node = get_neighbours_of_node(next_node, adj_matrix);
         for (auto it = neighbours_of_node.begin(); it != neighbours_of_node.end(); it++) {
